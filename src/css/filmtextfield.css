@@ -1,0 +1,26 @@
+
+    .centerStyle {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh
+    }
+    .flexboxcontainer {
+      width: 100%;
+      display: flex;
+      flex-direction: row
+    }
+    .textFieldContainer {
+      box-sizing: 20;
+      height: 50;
+      width: 250; 
+    }
+    .fontStyleContainer {
+      font-family: font1;
+      font-display: swap;
+      font-weight: 400
+    }
+    .buttonContainer {
+      width: 20%;
+      height: 50
+    }
