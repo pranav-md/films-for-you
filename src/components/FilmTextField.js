@@ -1,8 +1,8 @@
-import React from "react";
+import {React, useState} from "react";
 import TextField from "@material-ui/core/TextField";
 import { makeStyles } from "@material-ui/core/styles";
 import Autocomplete from '@material-ui/lab/Autocomplete';
-
+import api from '../api/filmApi'
 const font1 = "'Open Sans', sans-serif";
 
 const useStyles = makeStyles((theme) => ({
@@ -36,6 +36,7 @@ const useStyles = makeStyles((theme) => ({
 
 export default function FormPropsTextFields() {
   const classes = useStyles();
+  const [films, setFilms] = useState(0);
 
   const top100Films = [
     { title: 'The Shawshank Redemption', year: 1994 },
@@ -66,6 +67,13 @@ export default function FormPropsTextFields() {
             {...params}
             className={classes.textFieldContainer}
             id="outlined-read-only-input"
+            onChange={(event)=>{
+              const value  = event.target.defaultValue
+              setFilms(value)
+              console.log(api.searchFilms(value));
+              console.log(value);
+            }
+          }
             InputProps=
             {{
               className: classes.fontStyleContainer,
