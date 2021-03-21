@@ -8,9 +8,20 @@ const instance = axios.create({
 });
 
 export default {
-    searchFilms: (symbol) =>
+    searchFilms: (filmStr) =>
     instance({
         'method':'POST',
-        'url':'/v1/film/'+symbol
+        'url':'/v1/film/'+filmStr
+    }),
+    getFilm: (filmId) =>
+    instance({
+        'method':'GET',
+        'url':'/v1/film/'+filmId
+    }),
+    predictFilm: (filmData) =>
+    instance({
+        'method':'POST',
+        'url':'/predict-film/',
+        'data': filmData
     })
 }

@@ -61,16 +61,33 @@ const useStyles = makeStyles((theme) => ({
   }
 }));
 
-export default function MediaControlCard() {
+export default function FilmDialogBox(props) {
+
+  const { filmDetails, setFilmDetails, handleDialogBoxClose, appendSelectedFilms} =props
   const classes = useStyles();
   const theme = useTheme();
+
+  var rating =2
+
+  function changeRating(num){
+    rating= num
+  }
+
+  function selectFilm(){
+    // var filmsList= [...selectedFilmList]
+    // filmsList.push(filmDetails)
+    filmDetails["rating"]=rating
+    appendSelectedFilms(filmDetails)
+    console.log("TYPE of Filmdetails"+(typeof filmDetails))
+    handleDialogBoxClose()
+  }
 
   return (
     <Card className={classes.root}>
       <CardMedia
         className={classes.cover}
-        image="https://m.media-amazon.com/images/M/MV5BMDU2ZWJlMjktMTRhMy00ZTA5LWEzNDgtYmNmZTEwZTViZWJkXkEyXkFqcGdeQXVyNDQ2OTk4MzI@._V1_FMjpg_UX1005_.jpg"
-        title="Toy story"
+        image= {filmDetails.imageURL}
+        title= {filmDetails.name}
       />
       <div className={classes.details}>
         <CardContent className={classes.content}>
@@ -82,10 +99,10 @@ export default function MediaControlCard() {
               AlignItems: "center"
             }}
           >
-            <Typography component="h5" variant="h5">
-              Toy Story
+            <Typography component="h7" variant="h7">
+            {filmDetails.name}
             </Typography>
-            <Typography
+            {/* <Typography
               style={{
                 paddingLeft: theme.spacing(1),
                 alignSelf: "flex-end",
@@ -93,16 +110,13 @@ export default function MediaControlCard() {
               }}
             >
               (1995)
-            </Typography>
+            </Typography> */}
           </div>
           <Typography variant="subtitle2" color="textSecondary">
-            Comedy | Comic | Cartoon | Animated
+          {filmDetails.generes.join(" | ")}
           </Typography>
           <Typography variant="subtitle2" color="textSecondary">
-            Directed by : John Lassetter
-          </Typography>
-          <Typography variant="subtitle2" color="textSecondary">
-            Produced by : Pixar Studios
+            Directed by : {filmDetails.director}
           </Typography>
           <Typography
             style={{
@@ -110,18 +124,20 @@ export default function MediaControlCard() {
               color: "#9ca3ad"
             }}
           >
-            iMDB rating: 8.3/10
+            iMDB rating: {filmDetails.userRating}/10
           </Typography>
         </CardContent>
         <Box component="fieldset" mb={3} borderColor="transparent">
           <Typography component="legend">Enter your rating</Typography>
-          <Rating name="customized-empty" defaultValue={2} precision={0.5} />
+          <Rating name="customized-empty" defaultValue={2} precision={0.5} 
+                onChange={(event, value)=>{changeRating(value)}}
+          />
         </Box>
         <div className={classes.buttonStyle}>
-        <Button className={classes.cancelButton}>
+        <Button className={classes.cancelButton} onClick={handleDialogBoxClose}>
             Cancel
           </Button>
-          <Button className={classes.addButton}>
+          <Button className={classes.addButton} onClick={selectFilm}>
             Add
           </Button>
         </div>

@@ -3,6 +3,7 @@ import TextField from "@material-ui/core/TextField";
 import { makeStyles } from "@material-ui/core/styles";
 import Autocomplete from '@material-ui/lab/Autocomplete';
 import api from '../api/filmApi'
+import FilmDialog from './FilmDialog'
 const font1 = "'Open Sans', sans-serif";
 
 const useStyles = makeStyles((theme) => ({
@@ -34,17 +35,68 @@ const useStyles = makeStyles((theme) => ({
   }
 }));
 
-export default function FormPropsTextFields() {
+export default function FilmTextField(props) {
   const classes = useStyles();
-  const [films, setFilms] = useState(0);
 
-  const top100Films = [
-    { title: 'The Shawshank Redemption', year: 1994 },
-    { title: 'The Godfather', year: 1972 },
-    { title: 'The Godfather: Part II', year: 1974 }
-  ]
+  const {appendSelectedFilms} = props
+
+  const [filmNames, setfilmNames] = useState([]);
+  const [filmIds, setfilmIds] = useState([]);
+  const [openPopup, setOpenPopup]= useState(false)
+  const [filmDetails, setFilmDetails]= useState({})
+  //const [open, setOpen]=filmDialogBox.useState(false)
+
+
+  function handleDialogBoxClose(){
+    setOpenPopup(false);
+  };
+
+
+  function handleDialogBoxOpen(){
+    setOpenPopup(true);
+  };
+
+  function getFilms(filmStr){
+    if(filmStr)
+    {
+    api.searchFilms(filmStr).then(
+    
+      data =>{ 
+        const fNames = [];
+        const fIds = [];
+        for(let key in data.data){
+          fNames.push(data.data[key]);
+          fIds.push(key)
+        }
+        setfilmNames(fNames)
+        setfilmIds(fIds)
+       // setFilms(JSON.parse(data.data))
+      console.log(fNames)}
+      )
+      }
+  }
+  const nthElement = (arr, n = 0) => (n > 0 ? arr.slice(n, n + 1) : arr.slice(n))[0];
+
+  function getFilm(filmName){
+    console.log(filmName);
+    console.log("position of filmName= "+filmNames.indexOf(filmName))
+    console.log("film content= "+filmNames.indexOf(filmName))
+    const filmId=nthElement(filmIds, filmNames.indexOf(filmName))
+    api.getFilm(filmId).then(
+      data =>{ 
+        var filmData= data.data
+        filmData["id"]=filmId
+      setFilmDetails(data.data)
+      handleDialogBoxOpen()
+    }
+     )
+    console.log("film id of filmName= "+nthElement(filmIds, filmNames.indexOf(filmName)))
+
+ //   filmDialogBox.setOpen(true)
+  }
 
   return (
+    <div>
     <form noValidate autoComplete="off">
       <div className={classes.flexboxcontainer}>
       <Autocomplete
@@ -61,19 +113,14 @@ export default function FormPropsTextFields() {
         {{
           className: classes.fontStyleContainer
         }}
-        options={[].map((option) => option.title)}
+        options={filmNames.map((option) => option)}
+        onChange={(event, value)=>{getFilm(value)}}
         renderInput={(params) => (
           <TextField
             {...params}
             className={classes.textFieldContainer}
             id="outlined-read-only-input"
-            onChange={(event)=>{
-              const value  = event.target.defaultValue
-              setFilms(value)
-              console.log(api.searchFilms(value));
-              console.log(value);
-            }
-          }
+            onChange={(event)=>{getFilms(event.target.defaultValue)}}
             InputProps=
             {{
               className: classes.fontStyleContainer,
@@ -89,5 +136,12 @@ export default function FormPropsTextFields() {
       />
       </div>
     </form>
+    <FilmDialog
+      openPopup= {openPopup}
+      handleDialogBoxClose= {handleDialogBoxClose}
+      filmDetails={filmDetails}
+      setFilmDetails ={filmDetails}
+      appendSelectedFilms={appendSelectedFilms}/>
+    </div>
   );
 }
